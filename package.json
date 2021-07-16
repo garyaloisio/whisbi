@@ -1,0 +1,27 @@
+{
+  "name": "whisbi",
+  "version": "1.0.0",
+  "description": "Whisbi project",
+  "main": "main.js",
+  "scripts": {
+    "start": "npm run open",
+    "open": "concurrently \"http-server -a localhost -p 3000\" \"open http://localhost:3000/index.html\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/garyaloisio/whisbi.git"
+  },
+  "author": "Gary Aloisio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/garyaloisio/whisbi/issues"
+  },
+  "homepage": "https://github.com/garyaloisio/whisbi#readme",
+  "devDependencies": {
+    "concurrently": "^6.2.0",
+    "http-server": "^0.12.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

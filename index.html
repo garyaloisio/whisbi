@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script>
+    var dataPoints = [];
+    var chart;
+
+    window.onload = function () {
+
+      chart = new CanvasJS.Chart("chartContainer", {
+        exportEnabled: true,
+        animationEnabled: true,
+        theme: "light2",
+        title: {
+          text: "Countries Single Denomination in Euros"
+        },
+        subtitles: [
+          {
+            text: "This is a Subtitle"
+          }
+        ],
+        axisX: {
+          title: "Countries",
+        },
+        axisY: {
+          title: "Euros",
+          titleFontSize: 24,
+          includeZero: true
+        },
+        data: [{
+          type: "column",
+          yValueFormatString: " €##.#### Euros",
+          dataPoints: dataPoints
+        }]
+      });
+
+      function addData(data) {
+        let date = data.date
+        for (let key in data.rates) {
+          dataPoints.push({
+            label: key,
+            y: 1 / data.rates[key]
+          });
+        }
+        chart.options.subtitles[0].text = date
+        chart.render();
+        createExcelSheetExport()
+      }
+
+
+      const createExcelSheetExport = () => {
+        var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[0];
+        if (chart.get("exportEnabled")) {
+          var exportCSV = document.createElement('div');
+          var text = document.createTextNode("Save as CSV");
+          exportCSV.setAttribute("style", "padding: 12px 8px; background-color: white; color: black")
+          exportCSV.appendChild(text);
+
+          exportCSV.addEventListener("mouseover", function () {
+            exportCSV.setAttribute("style", "padding: 12px 8px; background-color: #2196F3; color: white")
+          });
+          exportCSV.addEventListener("mouseout", function () {
+            exportCSV.setAttribute("style", "padding: 12px 8px; background-color: white; color: black")
+          });
+          exportCSV.addEventListener("click", function () {
+            downloadCSV({ filename: "chart-data.csv", chart: chart })
+          });
+          toolBar.lastChild.appendChild(exportCSV);
+        }
+        else {
+          var exportCSV = document.createElement('button');
+          var text = document.createTextNode("Save as CSV");
+          exportCSV.appendChild(text);
+          exportCSV.addEventListener("click", function () {
+            downloadCSV({ filename: "chart-data.csv", chart: chart })
+          });
+          document.body.appendChild(exportCSV)
+        }
+
+
+        function convertChartDataToCSV(args) {
+          var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+
+          data = args.data || null;
+          if (data == null || !data.length) {
+            return null;
+          }
+
+          columnDelimiter = args.columnDelimiter || ',';
+          lineDelimiter = args.lineDelimiter || '\n';
+
+          keys = Object.keys(data[0]);
+
+          result = '';
+          result += keys.join(columnDelimiter);
+          result += lineDelimiter;
+
+          data.forEach(function (item) {
+            ctr = 0;
+            keys.forEach(function (key) {
+              if (ctr > 0) result += columnDelimiter;
+              result += item[key];
+              ctr++;
+            });
+            result += lineDelimiter;
+          });
+          return result;
+        }
+
+        function downloadCSV(args) {
+          var data, filename, link;
+          var csv = "";
+          for (var i = 0; i < args.chart.options.data.length; i++) {
+            csv += convertChartDataToCSV({
+              data: args.chart.options.data[i].dataPoints
+            });
+          }
+          if (csv == null) return;
+
+          filename = args.filename || 'chart-data.csv';
+
+          if (!csv.match(/^data:text\/csv/i)) {
+            csv = 'data:text/csv;charset=utf-8,' + csv;
+          }
+
+          data = encodeURI(csv);
+          link = document.createElement('a');
+          link.setAttribute('href', data);
+          link.setAttribute('download', filename);
+          document.body.appendChild(link); // Required for FF
+          link.click();
+          document.body.removeChild(link);
+        }
+      }
+
+      const sendHttpRequest = (method, url, data) => {
+        const promise = new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          console.log('url: ', url)
+          xhr.open(method, url);
+
+          xhr.responseType = 'json';
+
+          if (data) {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+          }
+
+          xhr.onload = () => {
+            if (xhr.status >= 400) {
+              reject(xhr.response);
+            } else {
+              resolve(xhr.response);
+            }
+          };
+
+          xhr.onerror = () => {
+            reject('Something went wrong!');
+          };
+
+          xhr.send(JSON.stringify(data));
+        });
+        return promise;
+      };
+
+      async function fetchRates() {
+        let result = await sendHttpRequest('GET', `http://api.exchangeratesapi.io/v1/latest?access_key=e2c5138489e8015341ed2a1a48941af2
+&base=EUR& symbols=USD,CAD,MXN,BRL`)
+
+        addData(result)
+      }
+      fetchRates()
+    }
+
+
+  </script>
+  <h3>Regions</h3>
+
+  <select onchange="currencyRegionChooser(dataPoints, chart, this.value)">
+    <option value="" disabled selected>Select A Region</option>
+    <option>Americas</option>
+    <option>Europe</option>
+    <option>Asia</option>
+    <option>Africa</option>
+    <option>Bitcoin</option>
+
+  </select>
+
+  <h3>List of All Currencies</h3>
+
+  <select id="selectCurrency" onchange="currencyIndividualChooser(dataPoints, chart, this.value)">
+    <option value="" disabled selected>Select A Currency</option>
+  </select>
+
+  <select id="selectCurrencyTwo" onchange="currencyIndividualChooserTwo(dataPoints, chart, this.value)">
+    <option value="" disabled selected>Select A Currency</option>
+  </select>
+
+  <button onclick="clickMe(dataPoints, chart)">Clear</button>
+
+
+
+  <form onsubmit="changeDate(dataPoints, chart, event)">
+    <h3>Enter A Date</h3>
+    <input <input placeholder="YYYY-MM-DD" name="searchTerm" />
+    <button>Submit</button>
+  </form>
+
+<body>
+
+  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+  <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script src="functions.js"></script
+</body>
+
+</html>
