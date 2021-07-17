@@ -174,7 +174,7 @@
       };
 
       async function fetchRates() {
-        let result = await sendHttpRequest('GET', `http://api.exchangeratesapi.io/v1/latest?access_key=e2c5138489e8015341ed2a1a48941af2
+        let result = await sendHttpRequest('GET', `http://api.exchangeratesapi.io/v1/latest?access_key=816dabb724b6309b7aa48f4ccbd8e466
 &base=EUR& symbols=USD,CAD,MXN,BRL`)
 
         addData(result)
@@ -192,7 +192,7 @@
   <div class="topTitles">
     <h3>Regions</h3>
     <h2 class="divider"></h2>
-    <h3>Enter A Date</h3>
+    <h3 class="enterDate">Enter A Date</h3>
   </div>
   <div class="containerOne">
 
@@ -230,15 +230,7 @@
   <br>
   <br>
 
-
-
-
-
-
-
-
-
-  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+  <div id="chartContainer" style="height: 320px; width: 100%;"></div>
   <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
   <script src="functions.js"></script>

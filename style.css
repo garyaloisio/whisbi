@@ -140,8 +140,12 @@ body{
   margin: 100px;  /* and that, will result in a 10px gap */
 }
 
-.divider{
+/* .divider{
   margin-left: 995px;
+} */
+.enterDate{
+  margin-left: 995px;
+  margin-right: 300px;
 }
 .dividerTwo{
   margin-left: 300px;
