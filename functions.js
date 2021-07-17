@@ -1,171 +1,3 @@
-// import { sendHttpRequest } from './static/sendHttpRequest'
-// import { currencyRegionChooser } from './static/currencyRegionChooser'
-// import { currencyIndividualChooser } from './static/currencyIndividualChooser'
-// import { currencyIndividualChooserTwo } from './static/currencyIndividualChooserTwo'
-// import { fetchRatesCountryData } from './static/fetchRatesCountryData'
-// import { fetchRatesCountryDataWithDate } from './static/fetchRatesCountryDataWithDate'
-// import { changeDate } from './static/changeDate'
-
-
-const sendHttpRequest = (method, url, data) => {
-  const promise = new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    console.log('url: ', url)
-    xhr.open(method, url);
-
-    xhr.responseType = 'json';
-
-    if (data) {
-      xhr.setRequestHeader('Content-Type', 'application/json');
-    }
-
-    xhr.onload = () => {
-      if (xhr.status >= 400) {
-        alert("SORRY WE DONT HAVE WHAT YOU'RE LOOKING FOR");
-      } else {
-        resolve(xhr.response);
-      }
-    };
-
-    xhr.onerror = () => {
-      reject('Something went wrong!');
-    };
-
-    xhr.send(JSON.stringify(data));
-  });
-  return promise;
-};
-
-
-async function currencyRegionChooser(dataPoints, chart, selectedValue) {
-  let string
-  if (selectedValue === "Select A Region") {
-    return
-  }
-  if (selectedValue === "Americas") {
-    string = "USD,CAD,MXN,BRL"
-  }
-  if (selectedValue === "Europe") {
-    string = "GBP,CHF,SEK,NOK,TRY,DKK,PLN"
-  }
-  if (selectedValue === "Asia") {
-    string = "JPY,AUD,CNY,NZD,SGD,HKD,INR,TWD"
-  }
-  if (selectedValue === "Africa") {
-    string = "ZAR,NGN,CVE"
-  }
-  if (selectedValue === "Bitcoin") {
-    string = "BTC"
-  }
-  let query = await fetchRatesCountryData(string)
-  dataPoints.splice(0, dataPoints.length)
-  for (let key in query.rates) {
-    dataPoints.push({
-      label: key,
-      y: 1 / query.rates[key]
-    });
-  }
-  chart.options.subtitles[0].text = query.date
-  chart.render();
-
-}
-
-async function currencyIndividualChooser(dataPoints, chart, selectedValue) {
-  if (selectedValue === "Select A Currency") {
-    return
-  }
-  let string = selectedValue.slice(1, 4)
-  let query = await fetchRatesCountryData(string)
-  let secondDataPoint = null
-
-  if (dataPoints.length === 2) {
-    secondDataPoint = dataPoints[1]
-  }
-
-  dataPoints.splice(0, dataPoints.length)
-
-  if (secondDataPoint !== null) {
-
-    for (let key in query.rates) {
-      dataPoints.unshift({
-        label: key,
-        y: 1 / query.rates[key]
-      });
-    }
-
-    dataPoints.push(secondDataPoint)
-  }
-  else {
-
-    for (let key in query.rates) {
-      dataPoints.push({
-        label: key,
-        y: 1 / query.rates[key]
-      });
-    }
-  }
-
-
-
-
-
-
-  chart.options.subtitles[0].text = query.date
-  chart.render();
-}
-
-
-async function currencyIndividualChooserTwo(dataPoints, chart, selectedValue) {
-  if (selectedValue === "Select A Currency") {
-    return
-  }
-  let string = selectedValue.slice(1, 4)
-  let query = await fetchRatesCountryData(string)
-
-
-  for (let key in query.rates) {
-    if (dataPoints.length === 2) {
-      // dataPoints.splice(0, dataPoints.length)
-      dataPoints.pop()
-      dataPoints.push({
-        label: key,
-        y: 1 / query.rates[key]
-      });
-    }
-    else if (dataPoints.length > 2) {
-      dataPoints.splice(0, dataPoints.length)
-      dataPoints.push({
-        label: key,
-        y: 1 / query.rates[key]
-      });
-    }
-    else {
-      dataPoints.push({
-        label: key,
-        y: 1 / query.rates[key]
-      });
-    }
-  }
-  chart.options.subtitles[0].text = query.date
-  chart.render();
-}
-
-
-async function fetchRatesCountryData(symbols) {
-  let result = await sendHttpRequest('GET', `http://api.exchangeratesapi.io/v1/latest?access_key=e2c5138489e8015341ed2a1a48941af2&base=EUR&symbols=${symbols}`)
-  if (result) {
-    return result
-  }
-}
-
-async function fetchRatesCountryDataWithDate(symbols, date) {
-  let result = await sendHttpRequest('GET', `http://api.exchangeratesapi.io/v1/${date}?access_key=e2c5138489e8015341ed2a1a48941af2&base=EUR&symbols=${symbols}`)
-  if (result) {
-    return result
-  }
-}
-
-
 const currencies = {
   AED: "United Arab Emirates Dirham",
   AFN: "Afghan Afghani",
@@ -355,14 +187,171 @@ for (let key in currencies) {
   el.textContent = opt;
   el.value = opt;
   selectCurrencyTwo.appendChild(el);
-
 }
+
+/******************************************************************************/
+const sendHttpRequest = (method, url, data) => {
+  const promise = new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    console.log('url: ', url)
+    xhr.open(method, url);
+
+    xhr.responseType = 'json';
+
+    if (data) {
+      xhr.setRequestHeader('Content-Type', 'application/json');
+    }
+
+    xhr.onload = () => {
+      if (xhr.status >= 400) {
+        alert("SORRY WE DONT HAVE WHAT YOU'RE LOOKING FOR");
+      } else {
+        resolve(xhr.response);
+      }
+    };
+
+    xhr.onerror = () => {
+      reject('Something went wrong!');
+    };
+
+    xhr.send(JSON.stringify(data));
+  });
+  return promise;
+};
+
+/******************************************************************************/
+
+async function currencyRegionChooser(dataPoints, chart, selectedValue) {
+  let string
+  if (selectedValue === "Select A Region") {
+    return
+  }
+  if (selectedValue === "Americas") {
+    string = "USD,CAD,MXN,BRL"
+  }
+  if (selectedValue === "Europe") {
+    string = "GBP,CHF,SEK,NOK,TRY,DKK,PLN"
+  }
+  if (selectedValue === "Asia") {
+    string = "JPY,AUD,CNY,NZD,SGD,HKD,INR,TWD"
+  }
+  if (selectedValue === "Africa") {
+    string = "ZAR,NGN,CVE"
+  }
+  if (selectedValue === "Bitcoin") {
+    string = "BTC"
+  }
+  let query = await fetchRatesCountryData(string)
+  dataPoints.splice(0, dataPoints.length)
+  for (let key in query.rates) {
+    dataPoints.push({
+      label: key,
+      y: 1 / query.rates[key]
+    });
+  }
+  chart.options.subtitles[0].text = query.date
+  chart.render();
+}
+
+/******************************************************************************/
+
+async function currencyIndividualChooser(dataPoints, chart, selectedValue) {
+  if (selectedValue === "Select A Currency") {
+    return
+  }
+  let string = selectedValue.slice(1, 4)
+  let query = await fetchRatesCountryData(string)
+  let secondDataPoint = null
+
+  if (dataPoints.length === 2) {
+    secondDataPoint = dataPoints[1]
+  }
+
+  dataPoints.splice(0, dataPoints.length)
+
+  if (secondDataPoint !== null) {
+
+    for (let key in query.rates) {
+      dataPoints.unshift({
+        label: key,
+        y: 1 / query.rates[key]
+      });
+    }
+
+    dataPoints.push(secondDataPoint)
+  }
+  else {
+    for (let key in query.rates) {
+      dataPoints.push({
+        label: key,
+        y: 1 / query.rates[key]
+      });
+    }
+  }
+  chart.options.subtitles[0].text = query.date
+  chart.render();
+}
+
+/******************************************************************************/
+async function currencyIndividualChooserTwo(dataPoints, chart, selectedValue) {
+  if (selectedValue === "Select A Currency") {
+    return
+  }
+  let string = selectedValue.slice(1, 4)
+  let query = await fetchRatesCountryData(string)
+
+
+  for (let key in query.rates) {
+    if (dataPoints.length === 2) {
+      dataPoints.pop()
+      dataPoints.push({
+        label: key,
+        y: 1 / query.rates[key]
+      });
+    }
+    else if (dataPoints.length > 2) {
+      dataPoints.splice(0, dataPoints.length)
+      dataPoints.push({
+        label: key,
+        y: 1 / query.rates[key]
+      });
+    }
+    else {
+      dataPoints.push({
+        label: key,
+        y: 1 / query.rates[key]
+      });
+    }
+  }
+  chart.options.subtitles[0].text = query.date
+  chart.render();
+}
+/******************************************************************************/
+
+async function fetchRatesCountryData(symbols) {
+  let result = await sendHttpRequest('GET', `http://api.exchangeratesapi.io/v1/latest?access_key=e2c5138489e8015341ed2a1a48941af2&base=EUR&symbols=${symbols}`)
+  if (result) {
+    return result
+  }
+}
+
+/******************************************************************************/
+
+async function fetchRatesCountryDataWithDate(symbols, date) {
+  let result = await sendHttpRequest('GET', `http://api.exchangeratesapi.io/v1/${date}?access_key=e2c5138489e8015341ed2a1a48941af2&base=EUR&symbols=${symbols}`)
+  if (result) {
+    return result
+  }
+}
+
+/******************************************************************************/
 
 function isValidDate(dateString) {
   var regEx = /^\d{4}-\d{2}-\d{2}$/;
   return dateString.match(regEx) != null;
 }
 
+/******************************************************************************/
 
 async function changeDate(dataPoints, chart, event) {
   event.preventDefault()
@@ -383,7 +372,6 @@ async function changeDate(dataPoints, chart, event) {
       chart.render();
       event.target.elements.searchTerm.value = ''
     }
-
     else {
       for (let i = 0; i < dataPoints.length - 1; i++) {
         string += dataPoints[i].label + ","
@@ -406,9 +394,8 @@ async function changeDate(dataPoints, chart, event) {
   else {
     alert('Please Enter Valid Date in YYYY-MM-DD Format')
   }
-
 }
-
+/******************************************************************************/
 function clickMe(dataPoints, chart) {
   console.log('hello')
   dataPoints.splice(0, dataPoints.length)

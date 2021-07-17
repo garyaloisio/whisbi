@@ -6,6 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karla">
   <script>
     var dataPoints = [];
     var chart;
@@ -21,14 +23,18 @@
         },
         subtitles: [
           {
-            text: "This is a Subtitle"
+            text: "This is a Subtitle",
+            titleFontSize: 24,
           }
         ],
         axisX: {
           title: "Countries",
+          labelFontSize: 30,
+          titleFontSize: 24,
         },
         axisY: {
           title: "Euros",
+          labelFontSize: 15,
           titleFontSize: 24,
           includeZero: true
         },
@@ -178,44 +184,65 @@
 
 
   </script>
-  <h3>Regions</h3>
-
-  <select onchange="currencyRegionChooser(dataPoints, chart, this.value)">
-    <option value="" disabled selected>Select A Region</option>
-    <option>Americas</option>
-    <option>Europe</option>
-    <option>Asia</option>
-    <option>Africa</option>
-    <option>Bitcoin</option>
-
-  </select>
-
-  <h3>List of All Currencies</h3>
-
-  <select id="selectCurrency" onchange="currencyIndividualChooser(dataPoints, chart, this.value)">
-    <option value="" disabled selected>Select A Currency</option>
-  </select>
-
-  <select id="selectCurrencyTwo" onchange="currencyIndividualChooserTwo(dataPoints, chart, this.value)">
-    <option value="" disabled selected>Select A Currency</option>
-  </select>
-
-  <button onclick="clickMe(dataPoints, chart)">Clear</button>
-
-
-
-  <form onsubmit="changeDate(dataPoints, chart, event)">
-    <h3>Enter A Date</h3>
-    <input <input placeholder="YYYY-MM-DD" name="searchTerm" />
-    <button>Submit</button>
-  </form>
 
 <body>
+  <article>
+    <h1>Whisbi</h1>
+  </article>
+  <div class="topTitles">
+    <h3>Regions</h3>
+    <h2 class="divider"></h2>
+    <h3>Enter A Date</h3>
+  </div>
+  <div class="containerOne">
+
+    <select class="select-css" onchange="currencyRegionChooser(dataPoints, chart, this.value)">
+      <option value="" disabled selected>Select A Region</option>
+      <option>Americas</option>
+      <option>Europe</option>
+      <option>Asia</option>
+      <option>Africa</option>
+      <option>Bitcoin</option>
+
+    </select>
+    <h2 class="dividerTwo"></h2>
+    <form onsubmit="changeDate(dataPoints, chart, event)">
+
+      <input <input placeholder="YYYY-MM-DD" name="searchTerm" class=myForm />
+      <button class="myButton">Submit</button>
+    </form>
+  </div>
+
+
+  <h3>Compare Currencies</h3>
+  <div class="conatainerTwo">
+    <select id="selectCurrency" class="select-css" onchange="currencyIndividualChooser(dataPoints, chart, this.value)">
+      <option value="" disabled selected>Select A Currency</option>
+    </select>
+    <br>
+    <select id="selectCurrencyTwo" class="select-css"
+      onchange="currencyIndividualChooserTwo(dataPoints, chart, this.value)">
+      <option value="" disabled selected>Select A Currency</option>
+    </select>
+  </div>
+  <br>
+  <button onclick="clickMe(dataPoints, chart)" class="myButton">Clear</button>
+  <br>
+  <br>
+
+
+
+
+
+
+
+
 
   <div id="chartContainer" style="height: 300px; width: 100%;"></div>
   <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-  <script src="functions.js"></script
+  <script src="functions.js"></script>
+
 </body>
 
 </html>

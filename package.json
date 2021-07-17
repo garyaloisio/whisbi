@@ -2,9 +2,9 @@
   "name": "whisbi",
   "version": "1.0.0",
   "description": "Whisbi project",
-  "main": "main.js",
+  "main": "functions.js",
   "scripts": {
-    "start": "npm run open",
+    "start": "node server.js",
     "open": "concurrently \"http-server -a localhost -p 3000\" \"open http://localhost:3000/index.html\""
   },
   "repository": {
