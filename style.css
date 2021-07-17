@@ -137,12 +137,10 @@ body{
   flex: 1 1 auto;
   text-align: center;
 
-  margin: 100px;  /* and that, will result in a 10px gap */
+  margin: 100px;
 }
 
-/* .divider{
-  margin-left: 995px;
-} */
+
 .enterDate{
   margin-left: 995px;
   margin-right: 300px;
